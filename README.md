@@ -2,12 +2,12 @@
 
 Before starting to hunt for threats on your network, you must first learn about the operating environment. You can follow a similar process I used in Splunk using this lab write up!
 -Learning about your operating environment: 
-  - First thing I did was open Splunk and in the Search & Reporting app type the following SPL to view my current data sourcetypes, sorting them by the total count number.
+  - The first step in this process is to open Splunk and in the Search & Reporting app type the following SPL to view my current data sourcetypes, sorting them by the total count number.
   - `| metadata type=sourcetypes index="My Data Index" | sort - totalCount  | convert ctime(*Time) `
   - A window like the below appeared. (click to expand)
-  - ![s1](https://github.com/user-attachments/assets/baae1944-1912-4abe-8859-6cdd0fa84e16)
+![s1](https://github.com/user-attachments/assets/baae1944-1912-4abe-8859-6cdd0fa84e16)
   - What did I learn about my network environement based upon what is displayed?
-    - ![s1 1](https://github.com/user-attachments/assets/88911c1a-cb9d-431e-95d6-cb5d81a48945)
+![s1 1](https://github.com/user-attachments/assets/88911c1a-cb9d-431e-95d6-cb5d81a48945)
     - I see that Amazon Web Service (AWS) is present which likley means some or all of the enviornment is running offprem (cloud based). I also see "WinEventLog" which likley means my environment is running a configuration of Windows.
 -   To confirm my assumption that the enviornment is running a configuration of Windows, I select a single host from the network to see what it is running. If it is running any Windows services then my assumption is correct. I use the SPL below to search the host looking for the source type Windows Event Logs.
     - ` index="My Data Index" host="My Single Host" sourcetype="WinEventLog*"`
@@ -22,6 +22,6 @@ Now that I have a pretty good understanding of my enviornment lets start threat 
  - Let's focus on just one of our user hosts on the network and drill down into their network logins. Network logins appear as Event ID3 in the Sysmon log.
    - `index=botsv4 sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" host="My Specific User Host" EventID=3`
  - I review the "Image" process field in the Selected Fields column and find something noteworthy!
- - <img width="1896" height="796" alt="image" src="https://github.com/user-attachments/assets/2894612b-d498-4392-a064-e749b9f2aae1" />
-   - One of the top values suggests that this user has been using a Tor browser. Tor browsers are particularly forbidden on corporate networks and this should be reported to the information security team. 
+<img width="1896" height="796" alt="image" src="https://github.com/user-attachments/assets/2894612b-d498-4392-a064-e749b9f2aae1" />
+ - One of the top values suggests that this user has been using a Tor browser. Tor browsers are particularly forbidden on corporate networks and this should be reported to the information security team. 
 <br><br><br>
