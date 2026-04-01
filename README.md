@@ -1,10 +1,10 @@
 # Threat-Hunting-with-Splunk
 
 Before starting to hunt for threats on your network, you must first learn about the operating environment. You can follow a similar process I used in Splunk using this lab write up!
--Learning about your operating environment: 
-  - The first step in this process is to open Splunk and in the Search & Reporting app type the following SPL to view my current data sourcetypes, sorting them by the total count number.
+
+  - The first step in this process is to open Splunk and in the Search & Reporting app type the following SPL to view data sourcetypes, sorting them by the total count number.
   - `| metadata type=sourcetypes index="My Data Index" | sort - totalCount  | convert ctime(*Time) `
-  - A window like the below appeared. (click to expand)
+  - A window like the below will appear. (click to expand)
 ![s1](https://github.com/user-attachments/assets/baae1944-1912-4abe-8859-6cdd0fa84e16)
   - What did I learn about my network environement based upon what is displayed?
 ![s1 1](https://github.com/user-attachments/assets/88911c1a-cb9d-431e-95d6-cb5d81a48945)
