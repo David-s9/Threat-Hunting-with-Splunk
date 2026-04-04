@@ -23,5 +23,31 @@ Now that I have a pretty good understanding of my enviornment lets start threat 
    - `index=botsv4 sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" host="My Specific User Host" EventID=3`
  - I review the "Image" process field in the Selected Fields column and find something noteworthy!
 <img width="1896" height="796" alt="image" src="https://github.com/user-attachments/assets/2894612b-d498-4392-a064-e749b9f2aae1" />
- - One of the top values suggests that this user has been using a Tor browser. Tor browsers are particularly forbidden on corporate networks and this should be reported to the information security team. 
+ - One of the top values suggests that this user has been using a Tor browser. Tor browsers are particularly forbidden on corporate networks and this should be reported to the information security team.
+<br><br>
+After finding one threat on the system, I now turn my efforts to try and find another! In the Search & Reporting app I search a host and the Sysmon log for logs with Event ID 1. Event ID 1 triggers whenever Windows starts a new process. This could be a great place to spot new malicious activity. I also search for the process name “powershell.exe.” My SPL syntax includes some stats and a count so I can easily review the data.
+
+- `index=botsv4 sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" EventID=1 process_name="powershell.exe" host="TheHostIamSearching"
+| stats count by host user CommandLine
+| sort - count`
+
+I select an event from the results that includes an encoded powershell command.
+<br><br>
+![l2 1](https://github.com/user-attachments/assets/aa9a8965-33ad-491d-aad1-39078e5e20bd)
+<br>
+- It looks like the command is encoded using Base64. I pull up a new web browser window and navigate over to CyberChef which is an open-source app that allows me to decode the command string.
+- ![l2 4](https://github.com/user-attachments/assets/ae38f332-ad67-4760-b2d3-003661c8a010)
+- <br>
+The encoded command is used to download and immediately run a script from the internet which is likely malicious. This technique is used to execute code without saving a file to the disk to avoid detection since the code will run in memory. 
+- IEX: tells PowerShell to take a string of text and run it as if it were a command.
+- New-Object Net.WebClient: Creates a temporary web browser-like tool.
+- DownloadString(http://x.x.x.x): Fetches the text content of the script located at that specific IP address.
+- invoke-passkey -unlock: This executes a specific function (presumably defined inside the downloaded script) with an "unlock" parameter.
+In summary this is a very suspicious and should be reported to the information security team! 
+
+
+
+
+
+
 <br><br><br>
