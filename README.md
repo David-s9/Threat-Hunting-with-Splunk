@@ -2,7 +2,7 @@
 
 Before starting to hunt for threats on the network, I first learn a little about the operating environment. If you have access to Splunk Enterprise, you can follow along with me using a similar process.
 <br><br>
-The first step in my process is to open Splunk and in the Search & Reporting app type the following SPL to view data sourcetypes, sorting them by the total count number.
+The first step in my process is to open Splunk and in the Search & Reporting app type the following SPL to view data source types, sorting them by the total count number.
   - `| metadata type=sourcetypes index="My Data Index" | sort - totalCount  | convert ctime(*Time) `
 <br><br>
 
@@ -10,20 +10,20 @@ A window like the below will appear. (click to expand)
 <br><br>
 ![s1](https://github.com/user-attachments/assets/baae1944-1912-4abe-8859-6cdd0fa84e16) 
 <br><br>
-What did I learn about my network environement based upon what is displayed?
+What did I learn about my network environment based upon what is displayed?
 <br><br>
 ![s1 1](https://github.com/user-attachments/assets/88911c1a-cb9d-431e-95d6-cb5d81a48945) 
-I see that Amazon Web Service (AWS) is present which likley means some or all of the enviornment is running offprem (cloud based). I also see "WinEventLog" which likley means my environment is running a configuration of Windows. 
+I see that Amazon Web Service (AWS) is present which likely means some or all of the environment is running offprem (cloud based). I also see "WinEventLog" which likely means my environment is running a configuration of Windows. 
 <br><br>
 To confirm my assumption, I select a single host from the network to see what it is running. If it is running any Windows services then my assumption is correct. I use the SPL below to search the host looking for the source type Windows Event Logs. 
  - ` index="My Data Index" host="My Single Host" sourcetype="WinEventLog*"`
 
 
-As my results come back I see that I have quite a few results were the sourcetype is WinEventLog. It is more than safe to assume that my enviornment is running a configuration of Windows. 
+As my results come back, I see that I have quite a few results were the sourcetype is WinEventLog. It is more than safe to assume that my environment is running a configuration of Windows. 
 
 ![S3](https://github.com/user-attachments/assets/877a7d61-d030-4989-96a7-50e0ae820bf0)
 <br><br>
-Now that I have a good understanding of my enviornment lets start threat hunting!  
+Now that I have a good understanding of my environment let's start threat hunting!  
 <br>
 I will start my search by looking at some Windows System Monitor logs (Windows Sysmon). This is a good place to start looking for threats because it contains logs on system activity, network connections, and changes in the file system. A perfect place for potential threats to be discovered! To do this I type in the SPL syntax below.
    - `index="My Data Index" sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational"`
@@ -45,7 +45,7 @@ After finding one threat on the system, I now turn my efforts to try and find an
 | stats count by host user CommandLine
 | sort - count`
 
-I select an event from the results that includes an encoded powershell command.
+I select an event from the results that includes an encoded Powershell command.
 <br><br>
 ![l2 1](https://github.com/user-attachments/assets/aa9a8965-33ad-491d-aad1-39078e5e20bd)
 <br>
